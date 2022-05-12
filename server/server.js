@@ -93,6 +93,19 @@ const handleLogin = async function(req,res){
 //Sign Up API
 app.post('/login', handleLogin)
 
+app.get('/database', (req,res) => {
+    User.find({ })
+        .then((data) => {
+            //console.log("Data: ", data);
+            res.json(data);
+        })
+        .catch((error) => {
+        console.log('error: ', error);
+        })
+        
+
+});
+
 
 
 app.post('/signup', (req,res)=> {
@@ -117,7 +130,7 @@ app.post('/signup', (req,res)=> {
                 //password is hash before adding to mongoDB
                 password : hash,
                 score: 0
-            })
+            }) 
             newUser.save()
             .catch((err)=> console.log(err))
             console.log(newUser)
