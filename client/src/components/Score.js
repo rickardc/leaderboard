@@ -6,9 +6,7 @@ function Score({finalScore, loggedInUserData}){
     async function updateScore(score, username){
         try{
 
-            const newScore = loggedInUserData.score + score;
-
-            const updateData = {username: username, score: newScore}
+            const updateData = {username: username, score: score}
             
             const response = await fetch('/saveScore', {
                 method: 'POST',

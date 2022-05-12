@@ -1,91 +1,20 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
+import Profiles from '../components/profiles';
 
-
+//const Leaderboard = fetchData = await fetch('/database');
 
 function Leaderboard({restartQuiz}){
-
-    const scoreArray = [
-        {
-            username: 1,
-            score: 5
-        },
-        {
-            username: 2,
-            score: 5
-        },
-        {
-            username: 3,
-            score: 5
-        },
-        {
-            username: 4,
-            score: 5
-        },
-        {
-            username: 5,
-            score: 5
-        },
-        {
-            username: 6,
-            score: 5
-        },
-        {
-            username: 7,
-            score: 5
-        },
-        {
-            username: 8,
-            score: 5
-        },
-        {
-            username: 9,
-            score: 5
-        },
-        {
-            username: 10,
-            score: 5
-        },
-        {
-            username: 11,
-            score: 5
-        },
-    ]
-
-    function getScores({handleLogin, getUserData}) {
-        async function loginDatabase(input){
-            try{
-                    //UNAME PW NOT SAVING?
-                const fetchData = await fetch('/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(input)
-                })
-                
-                const fetchResponse = await fetchData.json()
-                console.log(fetchResponse)
-                
-    ///////////////////////////////////return object for App state
-                //check password validity + set state
-                if (fetchResponse.validPassword===true){
-                    //calls function in App (sets Login true)
-                    handleLogin()
-                    //sends user object to App for state
-                    getUserData(fetchResponse.userData)
-                } else {
-                    alert(fetchResponse.message)
-                }
-    
-            }
-            catch(err){
-                console.error(err)
-            }
-        }
-    }
-
-    useEffect(()=>{
+    const [leaderboard, setLeaderboard] = useState(null)
+   
+    useEffect(() => {
         //Fetch API here
+        fetch('/database')
+            .then(res => {
+                return res.json();
+            })
+            .then(data => {
+                setLeaderboard(data);
+            })
         console.log('Fetching data');
     }, [])
 
@@ -97,20 +26,28 @@ function Leaderboard({restartQuiz}){
 
     return (
         <div className="leaderboard_container">
-            <div className="leaderboard">
-                <div className="leaderboard_row">
-                    {scoreArray.map(function(user, index){
-                        while(index<10){
-                            return <p key={user.username}>{index+1}. Username: {user.username}, score: {user.score}</p>
-                        }
-                    })}
-                </div>
+           <div className="leaderboard">
+            <h1 className='leaderboard'>Leaderboard</h1>
+            <div className="leaderboard_row">
+            {leaderboard && <Profiles Leaderboard={get_top(leaderboard)}></Profiles>}
             </div>
+
+            </div>
+            
             <p className="button_container">
             <button type="button" className="playAgain_btn" onClick={handleClick}>Play again</button>
             </p>
+
         </div>
     )
 }
+
+//Function to sort JSON by score 
+function get_top(data){
+    let sort = data.sort((a, b) => {
+        return b.score - a.score;
+    })        
+    return sort.slice(0, 4); // currently top 4
+} 
 
 export default Leaderboard;
